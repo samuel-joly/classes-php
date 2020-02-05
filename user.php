@@ -1,7 +1,7 @@
 <?php
 /*
 	user->register() = Get the user infos and send them to tye Database
-	
+	user->connect() = 
 
 
 
@@ -78,18 +78,30 @@
 				$this->email = null;
 				$this->firstname = null;
 				$this->lastname = null;
-				echo "Au revoir !";
+				echo "Au revoir !<br>";
 			}
 			else
 			{
-				echo "Vous n'etes pas connecté";
+				echo "Vous n'etes pas connecté<br>";
 			}
 		}
-
+		
+		public function delete()
+		{
+			$conn = mysqli_connect("localhost","root","","poo");
+			if(mysqli_query($conn, "DELETE FROM `utilisateurs` WHERE `utilisateurs`.`id` = ".$this->id))
+			{
+				$this->disconnect();
+				echo "Compte supprimé<br>";
+			}
+		}
+		
+		
 	}	
 	
 	$enzo = new user();
-	// $enzo->register("0nz3", "0000", "enzo-mandine@laplateforme.io", "enzo", "mandine");
+	$enzo->register("0nz3", "0000", "enzo-mandine@laplateforme.io", "enzo", "mandine");
 	$enzo->connect("0nz3", "0000");
+	// $enzo->delete();
 	
 ?>

@@ -68,10 +68,28 @@
 				}
 			}
 		}
+		
+		public function disconnect()
+		{
+			if(!is_null($this->id))
+			{
+				$this->id = null;
+				$this->login = null;
+				$this->email = null;
+				$this->firstname = null;
+				$this->lastname = null;
+				echo "Au revoir !";
+			}
+			else
+			{
+				echo "Vous n'etes pas connecté";
+			}
+		}
+
 	}	
 	
 	$enzo = new user();
-	$enzo->register("0nz3", "0000", "enzo-mandine@laplateforme.io", "enzo", "mandine");
+	// $enzo->register("0nz3", "0000", "enzo-mandine@laplateforme.io", "enzo", "mandine");
 	$enzo->connect("0nz3", "0000");
 	
 ?>

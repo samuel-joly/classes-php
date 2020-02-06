@@ -1,4 +1,12 @@
 <?php
+/*
+	lpdo::constructeur()	= Set the connection to database 
+	lpdo::connect()			= Close the connection if it exist and start a new one
+	lpdo::destructeur|close = Kill the current connexion
+
+*/
+
+
 	class lpdo
 	{
 		private $connexion = null;
@@ -16,7 +24,8 @@
 		{
 			if(isset($this->connexion))
 			{
-				mysqli_close($this->connexion);
+				$this->close();
+				echo "closed";
 			}
 			$this->connexion = mysqli_connect($host, $username, $password, $db);
 			$this->table = $db;

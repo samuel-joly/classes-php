@@ -3,8 +3,8 @@
 	{
 		private $connexion = null;
 		private $table = null;
-		public $lastQuery = null;
-		public $lastResult = null;
+		private $lastQuery = null;
+		private $lastResult = null;
 		
 		function constructeur($host="", $username="", $password="", $db="")
 		{

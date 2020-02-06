@@ -1,15 +1,14 @@
 <?php
 /*
-	user->register() 	= Get the user infos and send them to tye Database
-	user->connect() 	= Save the user datas in the user object
-	user->disconnect() 	= Free user attributes 
-	user->delete()		= Free user attributes and delete users data from database
-	user->update()		= Change user data if entered other data than the one saved
-	user->isConnected() = Return true if the user id is not null, false if it is
-
-
-
-
+	user::register() 	= Get the user infos and send them to tye Database
+	user::connect() 	= Save the user datas in the user object
+	user::disconnect() 	= Free user attributes 
+	user::delete()		= Free user attributes and delete users data from database
+	user::update()		= Change user data if entered other data than the one saved
+	user::isConnected() = Return true if the user id is not null, false if it is
+	user::getAllInfos() = Return all the stored data of the object
+	user::getLogin|Email|Firstname|Lastname() = Return the current object's attribute
+	user::refresh()		= Update object's attributes with database data
 */
 
 

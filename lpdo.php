@@ -105,13 +105,4 @@
 			
 		}
 	}
-
-
-	
-	$lpdo = new lpdo();
-	$lpdo->constructeur("localhost","root","","poo");
-	var_dump($lpdo->getTables());
-	var_dump($lpdo->getLastQuery());
-	
-
 ?>

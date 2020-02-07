@@ -43,8 +43,6 @@
 				{
 					echo "Pseudo déja pris";
 				}
-				
-				unset($pdo,$query);
 			}
 		}
 		
@@ -92,8 +90,8 @@
 		
 		public function delete()
 		{
-			$conn = mysqli_connect("localhost","root","","poo");
-			if(mysqli_query($conn, "DELETE FROM `utilisateurs` WHERE `utilisateurs`.`id` = ".$this->id))
+			$pdo = new PDO("mysql:host=localhost;dbname=poo","root","");
+			if($pdo->query("DELETE FROM `utilisateurs` WHERE `utilisateurs`.`id` = ".$this->id))
 			{
 				$this->disconnect();
 				echo "Compte supprimé<br>";
@@ -231,6 +229,7 @@
 	}	
 
 $enzo = new userpdo();
-// var_dump($enzo->register("eaoVe", "0000", "email", "monnom", "monprenom"));
+var_dump($enzo->register("eaoVe", "0000", "email", "monnom", "monprenom"));
 var_dump($enzo->connect("eaoVe", "0000"));
+// $enzo->delete();
 ?>

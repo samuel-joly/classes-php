@@ -1,14 +1,14 @@
 <?php
 	/*
 		userpdo::register() 	= Get the user infos and send them to the Database
-		user::connect() 	= Save the database datas in the user object
-		user::disconnect() 	= Free object attributes 
-		user::delete()		= Free object attributes and delete users data from database
-		user::update()		= Change object data if entered other data than the one saved
-		user::isConnected() = Return true if the user id is not null, false if it is
-		user::getAllInfos() = Return all the stored data of the object
-		user::getLogin|Email|Firstname|Lastname() = Return the current object's attribute
-		user::refresh()		= Update object's attributes with database data
+		userpdo::connect() 	= Save the database datas in the user object
+		userpdo::disconnect() 	= Free object attributes 
+		userpdo::delete()		= Free object attributes and delete users data from database
+		userpdo::update()		= Change object data if entered other data than the one saved
+		userpdo::isConnected() = Return true if the user id is not null, false if it is
+		userpdo::getAllInfos() = Return all the stored data of the object
+		userpdo::getLogin|Email|Firstname|Lastname() = Return the current object's attribute
+		userpdo::refresh()		= Update object's attributes with database data
 	*/
 
 	class userpdo
@@ -98,67 +98,74 @@
 			}
 		}
 		
-		public function update($login, $password , $email , $firstname, $lastname)
-		{
-			$conn = mysqli_connect("localhost","root","","poo");
-			
-			if(!is_null($login))
-			{	
-				if(empty(mysqli_fetch_row(mysqli_query($conn, "SELECT login FROM utilisateurs WHERE login = '".$login."'"))))
-				{
-					if($login != $this->login)
-					{
-						if(mysqli_query($conn, "UPDATE utilisateurs SET login = '".$login."' WHERE id=".$this->id))
-						{
-							echo "Login modifié (ancient: ".$this->login." - nouveau:".$login.")<br>";
-						}
-					}					
-				}
+		public function update($login , $email , $firstname, $lastname, $password)
+		{	
+			if(is_null($this->id))
+			{
+				return false;
 			}
 			
-			if(!is_null($password))
-			{	
-				$usr_password = mysqli_fetch_row(mysqli_query($conn, "SELECT password FROM utilisateurs WHERE id =".$this->id))[0];
-				if(!password_verify($password, $usr_password))
-				{
-					if(mysqli_query($conn, "UPDATE utilisateurs SET password = '".$password."' WHERE id=".$this->id))
-					{
-						echo "Password modifié <br>";
-					}
-				}
-			}			
+			$pdo = new PDO("mysql:host=localhost;dbname=poo","root","");
+			$request = $pdo->prepare("UPDATE utilisateurs SET login = ?, email = ?, firstname = ?, lastname = ?, password = ?  WHERE id = ".$this->id);
 			
-			if(!is_null($email))
-			{			
-				if($email != $this->email)
-				{
-					if(mysqli_query($conn, "UPDATE utilisateurs SET email= '".$email."' WHERE id=".$this->id))
-					{
-						echo "Email modifié (ancient: ".$this->email." - nouveau:".$email.")<br>";
-					}
-				}
-			}			
-			
-			if(!is_null($firstname))
-			{			
-				if($firstname!= $this->firstname)
-				{
-					if(mysqli_query($conn, "UPDATE utilisateurs SET firstname = '".$firstname."' WHERE id=".$this->id))
-					{
-						echo "Firstname modifié (ancient: ".$this->firstname." - nouveau:".$firstname.")<br>";
-					}
-				}
+			$column = "";
+			$value = "";
+			if(!isset($login))
+			{
+				$login = $this->login;
 			}
 			
-			if(!is_null($lastname))
-			{			
-				if($lastname!= $this->lastname)
-				{
-					if(mysqli_query($conn, "UPDATE utilisateurs SET lastname = '".$lastname."' WHERE id=".$this->id))
-					{
-						echo "Lastname modifié (ancient: ".$this->lastname." - nouveau:".$lastname.")<br>";
-					}
-				}
+			if(!isset($email))
+			{
+				$email = $this->email;
+			}
+			
+			if(!isset($firstname))
+			{
+				$firstname=$this->firstname;
+			}
+			
+			if(!isset($lastname))
+			{
+				$lastname = $this->lastname;
+			}
+			
+			if(!isset($password))
+			{
+				echo "Vous devez rentrer un mot de passe<br>";
+				return false;
+			}
+			
+			$request->bindValue(1,$login);
+			$request->bindValue(2,$email);
+			$request->bindValue(3,$firstname);
+			$request->bindValue(4,$lastname);
+			$request->bindValue(5,password_hash($password, PASSWORD_BCRYPT));
+			var_dump($request);
+			
+			if($login != $this->login && empty($pdo->query('SELECT login FROM utilisateurs WHERE login = "'.$login.'"')->fetch()[0]))
+			{
+				$request->execute();
+			}
+			
+			if($email != $this->email)
+			{
+				$request->execute();
+			}
+			
+			if($firstname != $this->firstname)
+			{
+				$request->execute();
+			}
+			
+			if($lastname != $this->lastname)
+			{
+				$request->execute();
+			}
+			
+			if(!password_verify($password, $pdo->query("SELECT password FROM utilisateurs WHERE id = ".$this->id)->fetch()[0]))
+			{
+				$request->execute();
 			}
 		}
 		
@@ -215,8 +222,8 @@
 		{
 			if(!is_null($this->id))
 			{
-				$conn = mysqli_connect("localhost","root","","poo");
-				$usr_data = mysqli_fetch_assoc(mysqli_query($conn,"SELECT * FROM utilisateurs WHERE id = ".$this->id));
+				$pdo = new PDO("mysql:host=localhost;dbname=poo","root","");
+				$usr_data = $pdo->query("SELECT * FROM utilisateurs WHERE id = ".$this->id)->fetch(PDO::FETCH_ASSOC);
 				if(!empty($usr_data))
 				{
 					$this->id = $usr_data["login"];
@@ -228,8 +235,4 @@
 		}
 	}	
 
-$enzo = new userpdo();
-var_dump($enzo->register("eaoVe", "0000", "email", "monnom", "monprenom"));
-var_dump($enzo->connect("eaoVe", "0000"));
-// $enzo->delete();
 ?>
